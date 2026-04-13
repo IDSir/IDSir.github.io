@@ -428,7 +428,7 @@
                     <input type="number" id="inp-max-attempts" value="5">
                 </div>
                 <div class="config-item">
-                    <label>TOTAL_PARAMS (自动)</label>
+                    <label id="ui-cfg-parmas">TOTAL_PARAMS (自动)</label>
                     <input type="text" id="disp-total-params" readonly style="opacity: 0.6">
                 </div>
             </div>
@@ -485,6 +485,7 @@
                 cfgList: "分类配置 (原样显示)",
                 cfgAdd: "+ 添加分类",
                 cfgAttempts: "最大尝试次数",
+                cfgParmas: "当前元素数量(自动)",
                 save: "保存并重置系统",
                 stAttempt: "尝试进度",
                 stParams: "参数数量",
@@ -508,6 +509,7 @@
                 cfgList: "Categories (Raw Labels)",
                 cfgAdd: "+ Add Category",
                 cfgAttempts: "Max Attempts",
+                cfgParmas: "Current element count (auto)",
                 save: "Save & Reset",
                 stAttempt: "Attempt",
                 stParams: "Params Count",
@@ -531,6 +533,7 @@
                 cfgList: "Категории",
                 cfgAdd: "+ Добавить",
                 cfgAttempts: "Макс. попыток",
+                cfgParmas: "Текущее количество элементов (автоматически)",
                 save: "Сохранить и сбросить",
                 stAttempt: "Попытка",
                 stParams: "Параметров",
@@ -624,6 +627,7 @@
             document.getElementById('ui-cfg-list').innerText = d.cfgList;
             document.getElementById('ui-cfg-add').innerText = d.cfgAdd;
             document.getElementById('ui-cfg-attempts').innerText = d.cfgAttempts;
+            document.getElementById('ui-cfg-parmas').innerText = d.cfgParmas;
             document.getElementById('ui-save').innerText = d.save;
             document.getElementById('ui-st-attempt').innerText = d.stAttempt;
             document.getElementById('ui-st-params').innerText = d.stParams;
