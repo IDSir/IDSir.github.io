@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黑客小游戏破解工具</title>
+    <title>协议破译助手</title>
     <style>
          :root {
             --bg-color: #0f172a;
@@ -44,7 +44,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
-            /* Reduced margin to accommodate credits */
         }
         
         .header-left {
@@ -99,13 +98,11 @@
             font-size: 0.85rem;
             outline: none;
         }
-        /* 强制下拉菜单里的选项文字为黑色 */
         
         select.lang-select option {
             color: #000000;
             background-color: #ffffff;
         }
-        /* Credits Area */
         
         .credits {
             font-size: 0.75rem;
@@ -224,12 +221,19 @@
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 0 8px 8px 0;
+            position: relative;
+        }
+        
+        .suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
         
         .suggestion-title {
             color: var(--accent-color);
             font-weight: bold;
-            margin-bottom: 10px;
             font-size: 0.9rem;
         }
         
@@ -238,6 +242,21 @@
             font-size: 1.2rem;
             letter-spacing: 1px;
             word-break: break-all;
+        }
+        /* Copy Button Overlay */
+        
+        .copy-toast {
+            position: absolute;
+            top: -30px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
         }
         
         .input-group {
@@ -345,7 +364,6 @@
             font-weight: bold;
             padding: 15px;
         }
-        /* Footer Links Area */
         
         .footer-links {
             text-align: center;
@@ -361,7 +379,6 @@
             text-decoration: none;
             transition: color 0.2s;
             display: block;
-            /* 使链接分行显示 */
         }
         
         .footer-links a:hover {
@@ -404,8 +421,7 @@
                 <strong id="ui-cfg-list">分类配置 (原样显示)</strong>
                 <button class="btn-add" onclick="addRow()" id="ui-cfg-add">+ 添加分类</button>
             </div>
-            <div id="config-rows-container">
-            </div>
+            <div id="config-rows-container"></div>
             <div class="config-meta">
                 <div class="config-item">
                     <label id="ui-cfg-attempts">最大尝试次数</label>
@@ -429,7 +445,13 @@
 
         <div id="game-ui">
             <div class="suggestion-box">
-                <div class="suggestion-title" id="ui-suggested">推荐扫描序列:</div>
+                <div id="copy-toast" class="copy-toast">已复制!</div>
+                <div class="suggestion-header">
+                    <div class="suggestion-title" id="ui-suggested">推荐扫描序列:</div>
+                    <button class="icon-btn" onclick="copySequence()" title="Copy to Clipboard" id="btn-copy">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                </button>
+                </div>
                 <div class="suggestion-value" id="best-guess-display">---</div>
             </div>
 
@@ -450,8 +472,8 @@
         <div class="history" id="history-log"></div>
 
         <div class="footer-links">
-            <a href="https://docs.google.com/document/d/16-usjgCmiN0MwOE3FmHWpo3PjzU6PIzhiABpRO7GK98/edit?tab=t.0" target="_blank">COR3.GG Google Docs@ImGoingSpace</a>
-            <a href="https://www.kdocs.cn/l/clanG3oYlobu" target="_blank" id="ui-doc-cn">中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)</a>
+            <a href="https://docs.google.com/document/d/16-usjgCmiN0MwOE3FmHWpo3PjzU6PIzhiABpRO7GK98/edit?tab=t.0" target="_blank">COR3.GG Google Docs</a>
+            <a href="https://www.kdocs.cn/l/clanG3oYlobu" target="_blank">中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)</a>
         </div>
     </div>
 
@@ -473,12 +495,12 @@
                 submit: "提交反馈",
                 undo: "返回上一步",
                 reset: "手动重置系统",
-                success: "🎉 破译成功！正在接入...",
+                success: "🎉 破译成功！",
                 error: "❌ 逻辑冲突：请检查反馈数据",
                 lastOne: "🎯 目标锁定",
                 rowName: "分类名",
                 rowVals: "选项(逗号隔开)",
-                docCN: "中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)"
+                copyOk: "复制成功!"
             },
             en: {
                 title: "Protocol Cracker",
@@ -496,12 +518,12 @@
                 submit: "Submit Feedback",
                 undo: "Undo Last",
                 reset: "Reset System",
-                success: "🎉 Success! Connected.",
+                success: "🎉 Success!",
                 error: "❌ Logic Conflict",
                 lastOne: "🎯 Target Locked",
                 rowName: "Name",
                 rowVals: "Values (split by comma)",
-                docCN: "中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)"
+                copyOk: "Copied!"
             },
             ru: {
                 title: "Взломщик",
@@ -519,12 +541,12 @@
                 submit: "Отправить",
                 undo: "Шаг назад",
                 reset: "Сброс системы",
-                success: "🎉 Успех! Соединение...",
+                success: "🎉 Успех! ",
                 error: "❌ Ошибка логики",
                 lastOne: "🎯 Цель захвачена",
                 rowName: "Имя",
                 rowVals: "Значения (через запятую)",
-                docCN: "中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)"
+                copyOk: "Скопировано!"
             }
         };
 
@@ -549,7 +571,6 @@
         let attemptNum = 1;
         let currentSuggested = null;
         let currentMaxScore = 0;
-
         let historyStack = [];
 
         function detectLanguage() {
@@ -590,7 +611,6 @@
                 vals: row.querySelector('.input-cat-vals').value
             }));
             MAX_ATTEMPTS = parseInt(document.getElementById('inp-max-attempts').value);
-
             toggleConfig();
             resetGame();
         }
@@ -598,6 +618,7 @@
         function changeLang(lang) {
             currentLang = lang;
             const d = i18n[lang];
+            document.title = d.title; // 动态变更网页标题
             document.getElementById('ui-title').innerText = d.title;
             document.getElementById('ui-credits').innerText = d.credits;
             document.getElementById('ui-cfg-list').innerText = d.cfgList;
@@ -613,12 +634,21 @@
             document.getElementById('ui-submit').innerText = d.submit;
             document.getElementById('ui-undo').innerText = d.undo;
             document.getElementById('ui-reset').innerText = d.reset;
-            document.getElementById('ui-doc-cn').innerText = d.docCN;
+            document.getElementById('copy-toast').innerText = d.copyOk;
 
             document.querySelectorAll('.input-cat-name').forEach(i => i.placeholder = d.rowName);
             document.querySelectorAll('.input-cat-vals').forEach(i => i.placeholder = d.rowVals);
-
             updateDisplay();
+        }
+
+        function copySequence() {
+            const text = document.getElementById('best-guess-display').innerText;
+            if (text === "---") return;
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('copy-toast');
+                toast.style.opacity = '1';
+                setTimeout(() => toast.style.opacity = '0', 1500);
+            });
         }
 
         function cartesianProduct(arrays) {
@@ -651,9 +681,7 @@
             };
             let best = null;
             let maxScore = [-1, 0];
-
             let searchSet = allCodes.length > 500 ? possibles : allCodes;
-
             for (let candidate of searchSet) {
                 let entropy = calculateEntropy(candidate, possibles);
                 let inPossibles = possibles.includes(candidate) ? 1 : 0;
@@ -674,14 +702,8 @@
             document.getElementById('total-params-display').innerText = CONFIG_DATA.length;
             document.getElementById('possibles-count').innerText = possibles.length;
             document.getElementById('entropy-display').innerText = currentMaxScore.toFixed(2);
-
             const uiSuggestTitle = document.getElementById('ui-suggested');
-            if (possibles.length === 1) {
-                uiSuggestTitle.innerText = i18n[currentLang].lastOne;
-            } else {
-                uiSuggestTitle.innerText = i18n[currentLang].suggested;
-            }
-
+            uiSuggestTitle.innerText = possibles.length === 1 ? i18n[currentLang].lastOne : i18n[currentLang].suggested;
             document.getElementById('best-guess-display').innerText = currentSuggested ? currentSuggested.join(' ') : "---";
         }
 
@@ -698,22 +720,16 @@
 
         function undoGuess() {
             if (historyStack.length === 0) return;
-
             const prevState = historyStack.pop();
             possibles = prevState.possibles;
             attemptNum = prevState.attemptNum;
             currentSuggested = prevState.currentSuggested;
             currentMaxScore = prevState.currentMaxScore;
             document.getElementById('history-log').innerHTML = prevState.logHTML;
-
             document.getElementById('status-area').innerHTML = "";
             document.getElementById('ui-submit').disabled = false;
             document.getElementById('mismatch-input').value = "";
-
-            if (historyStack.length === 0) {
-                document.getElementById('ui-undo').disabled = true;
-            }
-
+            if (historyStack.length === 0) document.getElementById('ui-undo').disabled = true;
             updateDisplay();
         }
 
@@ -721,25 +737,19 @@
             const val = document.getElementById('mismatch-input').value;
             const m = parseInt(val);
             if (isNaN(m) || m < 0 || m > CONFIG_DATA.length) return;
-
             saveState();
-
             if (m === 0) {
                 document.getElementById('status-area').innerHTML = `<div class="success-msg">${i18n[currentLang].success}</div>`;
                 document.getElementById('ui-submit').disabled = true;
                 return;
             }
-
             const log = document.getElementById('history-log');
             log.innerHTML = `<div class="log-entry">#${attemptNum} ${currentSuggested.join(' ')} | Mismatch: ${m}</div>` + log.innerHTML;
-
             possibles = possibles.filter(code => countMismatches(currentSuggested, code) === m);
-
             if (possibles.length === 0) {
                 document.getElementById('status-area').innerHTML = `<div class="error-msg">${i18n[currentLang].error}</div>`;
                 return;
             }
-
             attemptNum++;
             if (attemptNum <= MAX_ATTEMPTS) {
                 const res = findBestGuess();
@@ -754,32 +764,26 @@
 
         function resetGame() {
             const paramArrays = CONFIG_DATA.map(c => c.vals.split(',').map(v => v.trim()).filter(v => v !== ""));
-
             allCodes = cartesianProduct(paramArrays);
             possibles = [...allCodes];
             attemptNum = 1;
             historyStack = [];
-
             const res = findBestGuess();
             currentSuggested = res.code;
             currentMaxScore = res.entropy;
-
             document.getElementById('status-area').innerHTML = "";
             document.getElementById('history-log').innerHTML = "";
             document.getElementById('ui-submit').disabled = false;
             document.getElementById('ui-undo').disabled = true;
             document.getElementById('mismatch-input').value = "";
-
             updateDisplay();
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             CONFIG_DATA.forEach(c => addRow(c.name, c.vals));
-
             const lang = detectLanguage();
             document.getElementById('lang-selector').value = lang;
             changeLang(lang);
-
             resetGame();
         });
     </script>
