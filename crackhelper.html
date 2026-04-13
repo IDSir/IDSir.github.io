@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑客小游戏破解工具</title>
+    <style>
+         :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --success: #22c55e;
+            --error: #ef4444;
+            --border: #334155;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        /* Header */
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            /* Reduced margin to accommodate credits */
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: var(--accent-color);
+        }
+        
+        .icon-btn {
+            background: #334155;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            color: var(--text-main);
+            transition: background 0.2s;
+        }
+        
+        .icon-btn:hover {
+            background: var(--accent-color);
+            color: #0f172a;
+        }
+        
+        .lang-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #0f172a;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        
+        select.lang-select {
+            background: none;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        /* 强制下拉菜单里的选项文字为黑色 */
+        
+        select.lang-select option {
+            color: #000000;
+            background-color: #ffffff;
+        }
+        /* Credits Area */
+        
+        .credits {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-align: left;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            line-height: 1.4;
+        }
+        /* Config Panel */
+        
+        #config-panel {
+            display: none;
+            margin-bottom: 20px;
+            background: #111827;
+            border: 1px solid var(--accent-color);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .config-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .config-row input {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .input-cat-name {
+            flex: 2;
+        }
+        
+        .input-cat-vals {
+            flex: 4;
+        }
+        
+        .btn-del {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .btn-add {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .config-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border);
+        }
+        /* Stats & Game UI */
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 24px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #334155;
+            padding-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        
+        .stat-item:nth-last-child(-n+2) {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .stat-item b {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+        
+        .suggestion-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .suggestion-title {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .suggestion-value {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            word-break: break-all;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        button.main-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        
+        button.main-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+        
+        .btn-save {
+            background-color: var(--success);
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+        
+        .btn-group-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .btn-group-row button {
+            margin-bottom: 0;
+        }
+        
+        .history {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            max-height: 150px;
+            overflow-y: auto;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+        
+        .log-entry {
+            margin-bottom: 6px;
+            color: var(--text-dim);
+            font-family: monospace;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 4px;
+        }
+        
+        .success-msg {
+            color: var(--success);
+            text-align: center;
+            font-weight: bold;
+            padding: 15px;
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            background: rgba(34, 197, 94, 0.1);
+        }
+        
+        .error-msg {
+            color: var(--error);
+            text-align: center;
+            font-weight: bold;
+            padding: 15px;
+        }
+        /* Footer Links Area */
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border);
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+        
+        .footer-links a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: block;
+            /* 使链接分行显示 */
+        }
+        
+        .footer-links a:hover {
+            color: #7dd3fc;
+            text-decoration: underline;
+        }
+        
+        svg {
+            fill: currentColor;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1 id="ui-title">协议破译助手</h1>
+                <button class="icon-btn" onclick="toggleConfig()" id="btn-cfg-toggle">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            </button>
+            </div>
+            <div class="header-right">
+                <div class="lang-wrapper">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+                    <select class="lang-select" id="lang-selector" onchange="changeLang(this.value)">
+                    <option value="zh">中文</option>
+                    <option value="en">EN</option>
+                    <option value="ru">RU</option>
+                </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="credits" id="ui-credits">原代码来自于SonsOfSoon频道@KasliCatal的python脚本 网页版由@Sir修改而成</div>
+
+        <div id="config-panel">
+            <div class="config-header">
+                <strong id="ui-cfg-list">分类配置 (原样显示)</strong>
+                <button class="btn-add" onclick="addRow()" id="ui-cfg-add">+ 添加分类</button>
+            </div>
+            <div id="config-rows-container">
+            </div>
+            <div class="config-meta">
+                <div class="config-item">
+                    <label id="ui-cfg-attempts">最大尝试次数</label>
+                    <input type="number" id="inp-max-attempts" value="5">
+                </div>
+                <div class="config-item">
+                    <label>TOTAL_PARAMS (自动)</label>
+                    <input type="text" id="disp-total-params" readonly style="opacity: 0.6">
+                </div>
+            </div>
+            <button class="main-btn btn-save" onclick="applyConfig()" id="ui-save">保存并重置系统</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item"><span id="ui-st-attempt">尝试进度</span> <span><b id="attempt-count">1</b> / <span id="max-attempts-display">5</span></span>
+            </div>
+            <div class="stat-item"><span id="ui-st-params">参数数量</span> <b id="total-params-display">4</b></div>
+            <div class="stat-item"><span id="ui-st-poss">剩余可能</span> <b id="possibles-count">81</b></div>
+            <div class="stat-item"><span id="ui-st-entropy">信息增益</span> <b id="entropy-display">0.00</b></div>
+        </div>
+
+        <div id="game-ui">
+            <div class="suggestion-box">
+                <div class="suggestion-title" id="ui-suggested">推荐扫描序列:</div>
+                <div class="suggestion-value" id="best-guess-display">---</div>
+            </div>
+
+            <div class="input-group">
+                <label id="ui-input-label">输入游戏报告的不匹配数 (Mismatches):</label>
+                <input type="number" id="mismatch-input" min="0" max="10" placeholder="?">
+            </div>
+
+            <button class="main-btn btn-primary" onclick="submitGuess()" id="ui-submit">提交反馈</button>
+
+            <div class="btn-group-row">
+                <button class="main-btn btn-secondary" onclick="undoGuess()" id="ui-undo" disabled>返回上一步</button>
+                <button class="main-btn btn-secondary" onclick="resetGame()" id="ui-reset">手动重置系统</button>
+            </div>
+        </div>
+
+        <div id="status-area"></div>
+        <div class="history" id="history-log"></div>
+
+        <div class="footer-links">
+            <a href="https://docs.google.com/document/d/16-usjgCmiN0MwOE3FmHWpo3PjzU6PIzhiABpRO7GK98/edit?tab=t.0" target="_blank">COR3.GG Google Docs@ImGoingSpace</a>
+            <a href="https://www.kdocs.cn/l/clanG3oYlobu" target="_blank" id="ui-doc-cn">中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)</a>
+        </div>
+    </div>
+
+    <script>
+        const i18n = {
+            zh: {
+                title: "协议破译助手",
+                credits: "原代码来自于SonsOfSoon频道@KasliCatal的python脚本 网页版由@Sir修改而成",
+                cfgList: "分类配置 (原样显示)",
+                cfgAdd: "+ 添加分类",
+                cfgAttempts: "最大尝试次数",
+                save: "保存并重置系统",
+                stAttempt: "尝试进度",
+                stParams: "参数数量",
+                stPoss: "剩余可能",
+                stEntropy: "信息增益",
+                suggested: "推荐扫描序列",
+                inputLabel: "输入不匹配数 (0 - 参数总数):",
+                submit: "提交反馈",
+                undo: "返回上一步",
+                reset: "手动重置系统",
+                success: "🎉 破译成功！正在接入...",
+                error: "❌ 逻辑冲突：请检查反馈数据",
+                lastOne: "🎯 目标锁定",
+                rowName: "分类名",
+                rowVals: "选项(逗号隔开)",
+                docCN: "中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)"
+            },
+            en: {
+                title: "Protocol Cracker",
+                credits: "Original code from SonsOfSoon channel @KasliCatal's python script. Web mod by @Sir.",
+                cfgList: "Categories (Raw Labels)",
+                cfgAdd: "+ Add Category",
+                cfgAttempts: "Max Attempts",
+                save: "Save & Reset",
+                stAttempt: "Attempt",
+                stParams: "Params Count",
+                stPoss: "Remaining",
+                stEntropy: "Info Gain",
+                suggested: "Best Scan Sequence",
+                inputLabel: "Mismatches (0 - Total Params):",
+                submit: "Submit Feedback",
+                undo: "Undo Last",
+                reset: "Reset System",
+                success: "🎉 Success! Connected.",
+                error: "❌ Logic Conflict",
+                lastOne: "🎯 Target Locked",
+                rowName: "Name",
+                rowVals: "Values (split by comma)",
+                docCN: "中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)"
+            },
+            ru: {
+                title: "Взломщик",
+                credits: "Оригинальный код от @KasliCatal (канал SonsOfSoon). Веб-мод от @Sir.",
+                cfgList: "Категории",
+                cfgAdd: "+ Добавить",
+                cfgAttempts: "Макс. попыток",
+                save: "Сохранить и сбросить",
+                stAttempt: "Попытка",
+                stParams: "Параметров",
+                stPoss: "Осталось",
+                stEntropy: "Инфо",
+                suggested: "Рекомендуемая серия",
+                inputLabel: "Несовпадений (0 - Макс):",
+                submit: "Отправить",
+                undo: "Шаг назад",
+                reset: "Сброс системы",
+                success: "🎉 Успех! Соединение...",
+                error: "❌ Ошибка логики",
+                lastOne: "🎯 Цель захвачена",
+                rowName: "Имя",
+                rowVals: "Значения (через запятую)",
+                docCN: "中文AI机翻版文档(不定时更新 不保证时效性 建议去前面的原文档看)"
+            }
+        };
+
+        let CONFIG_DATA = [{
+            name: "VERSIONS",
+            vals: "v1.0, v1.1, v2.0"
+        }, {
+            name: "METHODS",
+            vals: "GET, PUT, POST"
+        }, {
+            name: "CHANNELS",
+            vals: "LTE, Sat, Fiber"
+        }, {
+            name: "CIPHERS",
+            vals: "AES, RSA, DES"
+        }];
+
+        let MAX_ATTEMPTS = 5;
+        let currentLang = 'zh';
+        let allCodes = [];
+        let possibles = [];
+        let attemptNum = 1;
+        let currentSuggested = null;
+        let currentMaxScore = 0;
+
+        let historyStack = [];
+
+        function detectLanguage() {
+            const lang = navigator.language.toLowerCase();
+            if (lang.startsWith('en')) return 'en';
+            if (lang.startsWith('ru')) return 'ru';
+            return 'zh';
+        }
+
+        function toggleConfig() {
+            const p = document.getElementById('config-panel');
+            p.style.display = p.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function addRow(name = "", vals = "") {
+            const container = document.getElementById('config-rows-container');
+            const div = document.createElement('div');
+            div.className = 'config-row';
+            div.innerHTML = `
+            <input type="text" class="input-cat-name" placeholder="${i18n[currentLang].rowName}" value="${name}">
+            <input type="text" class="input-cat-vals" placeholder="${i18n[currentLang].rowVals}" value="${vals}">
+            <button class="btn-del" onclick="this.parentElement.remove(); updateMeta();">×</button>
+        `;
+            container.appendChild(div);
+            updateMeta();
+        }
+
+        function updateMeta() {
+            const rows = document.querySelectorAll('.config-row');
+            document.getElementById('disp-total-params').value = rows.length;
+            document.getElementById('inp-max-attempts').value = rows.length + 1;
+        }
+
+        function applyConfig() {
+            const rows = document.querySelectorAll('.config-row');
+            CONFIG_DATA = Array.from(rows).map(row => ({
+                name: row.querySelector('.input-cat-name').value,
+                vals: row.querySelector('.input-cat-vals').value
+            }));
+            MAX_ATTEMPTS = parseInt(document.getElementById('inp-max-attempts').value);
+
+            toggleConfig();
+            resetGame();
+        }
+
+        function changeLang(lang) {
+            currentLang = lang;
+            const d = i18n[lang];
+            document.getElementById('ui-title').innerText = d.title;
+            document.getElementById('ui-credits').innerText = d.credits;
+            document.getElementById('ui-cfg-list').innerText = d.cfgList;
+            document.getElementById('ui-cfg-add').innerText = d.cfgAdd;
+            document.getElementById('ui-cfg-attempts').innerText = d.cfgAttempts;
+            document.getElementById('ui-save').innerText = d.save;
+            document.getElementById('ui-st-attempt').innerText = d.stAttempt;
+            document.getElementById('ui-st-params').innerText = d.stParams;
+            document.getElementById('ui-st-poss').innerText = d.stPoss;
+            document.getElementById('ui-st-entropy').innerText = d.stEntropy;
+            document.getElementById('ui-suggested').innerText = d.suggested;
+            document.getElementById('ui-input-label').innerText = d.inputLabel;
+            document.getElementById('ui-submit').innerText = d.submit;
+            document.getElementById('ui-undo').innerText = d.undo;
+            document.getElementById('ui-reset').innerText = d.reset;
+            document.getElementById('ui-doc-cn').innerText = d.docCN;
+
+            document.querySelectorAll('.input-cat-name').forEach(i => i.placeholder = d.rowName);
+            document.querySelectorAll('.input-cat-vals').forEach(i => i.placeholder = d.rowVals);
+
+            updateDisplay();
+        }
+
+        function cartesianProduct(arrays) {
+            return arrays.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+        }
+
+        function countMismatches(g, c) {
+            return g.reduce((acc, val, i) => acc + (val !== c[i] ? 1 : 0), 0);
+        }
+
+        function calculateEntropy(guess, currentPossibles) {
+            let counts = {};
+            currentPossibles.forEach(p => {
+                let m = countMismatches(guess, p);
+                counts[m] = (counts[m] || 0) + 1;
+            });
+            let entropy = 0;
+            let total = currentPossibles.length;
+            for (let m in counts) {
+                let p = counts[m] / total;
+                entropy -= p * Math.log2(p);
+            }
+            return entropy;
+        }
+
+        function findBestGuess() {
+            if (possibles.length === 1) return {
+                code: possibles[0],
+                entropy: 0
+            };
+            let best = null;
+            let maxScore = [-1, 0];
+
+            let searchSet = allCodes.length > 500 ? possibles : allCodes;
+
+            for (let candidate of searchSet) {
+                let entropy = calculateEntropy(candidate, possibles);
+                let inPossibles = possibles.includes(candidate) ? 1 : 0;
+                if (entropy > maxScore[0] || (entropy === maxScore[0] && inPossibles > maxScore[1])) {
+                    maxScore = [entropy, inPossibles];
+                    best = candidate;
+                }
+            }
+            return {
+                code: best,
+                entropy: maxScore[0]
+            };
+        }
+
+        function updateDisplay() {
+            document.getElementById('attempt-count').innerText = attemptNum;
+            document.getElementById('max-attempts-display').innerText = MAX_ATTEMPTS;
+            document.getElementById('total-params-display').innerText = CONFIG_DATA.length;
+            document.getElementById('possibles-count').innerText = possibles.length;
+            document.getElementById('entropy-display').innerText = currentMaxScore.toFixed(2);
+
+            const uiSuggestTitle = document.getElementById('ui-suggested');
+            if (possibles.length === 1) {
+                uiSuggestTitle.innerText = i18n[currentLang].lastOne;
+            } else {
+                uiSuggestTitle.innerText = i18n[currentLang].suggested;
+            }
+
+            document.getElementById('best-guess-display').innerText = currentSuggested ? currentSuggested.join(' ') : "---";
+        }
+
+        function saveState() {
+            historyStack.push({
+                possibles: [...possibles],
+                attemptNum: attemptNum,
+                currentSuggested: currentSuggested,
+                currentMaxScore: currentMaxScore,
+                logHTML: document.getElementById('history-log').innerHTML
+            });
+            document.getElementById('ui-undo').disabled = false;
+        }
+
+        function undoGuess() {
+            if (historyStack.length === 0) return;
+
+            const prevState = historyStack.pop();
+            possibles = prevState.possibles;
+            attemptNum = prevState.attemptNum;
+            currentSuggested = prevState.currentSuggested;
+            currentMaxScore = prevState.currentMaxScore;
+            document.getElementById('history-log').innerHTML = prevState.logHTML;
+
+            document.getElementById('status-area').innerHTML = "";
+            document.getElementById('ui-submit').disabled = false;
+            document.getElementById('mismatch-input').value = "";
+
+            if (historyStack.length === 0) {
+                document.getElementById('ui-undo').disabled = true;
+            }
+
+            updateDisplay();
+        }
+
+        function submitGuess() {
+            const val = document.getElementById('mismatch-input').value;
+            const m = parseInt(val);
+            if (isNaN(m) || m < 0 || m > CONFIG_DATA.length) return;
+
+            saveState();
+
+            if (m === 0) {
+                document.getElementById('status-area').innerHTML = `<div class="success-msg">${i18n[currentLang].success}</div>`;
+                document.getElementById('ui-submit').disabled = true;
+                return;
+            }
+
+            const log = document.getElementById('history-log');
+            log.innerHTML = `<div class="log-entry">#${attemptNum} ${currentSuggested.join(' ')} | Mismatch: ${m}</div>` + log.innerHTML;
+
+            possibles = possibles.filter(code => countMismatches(currentSuggested, code) === m);
+
+            if (possibles.length === 0) {
+                document.getElementById('status-area').innerHTML = `<div class="error-msg">${i18n[currentLang].error}</div>`;
+                return;
+            }
+
+            attemptNum++;
+            if (attemptNum <= MAX_ATTEMPTS) {
+                const res = findBestGuess();
+                currentSuggested = res.code;
+                currentMaxScore = res.entropy;
+                updateDisplay();
+            } else {
+                document.getElementById('ui-submit').disabled = true;
+            }
+            document.getElementById('mismatch-input').value = "";
+        }
+
+        function resetGame() {
+            const paramArrays = CONFIG_DATA.map(c => c.vals.split(',').map(v => v.trim()).filter(v => v !== ""));
+
+            allCodes = cartesianProduct(paramArrays);
+            possibles = [...allCodes];
+            attemptNum = 1;
+            historyStack = [];
+
+            const res = findBestGuess();
+            currentSuggested = res.code;
+            currentMaxScore = res.entropy;
+
+            document.getElementById('status-area').innerHTML = "";
+            document.getElementById('history-log').innerHTML = "";
+            document.getElementById('ui-submit').disabled = false;
+            document.getElementById('ui-undo').disabled = true;
+            document.getElementById('mismatch-input').value = "";
+
+            updateDisplay();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            CONFIG_DATA.forEach(c => addRow(c.name, c.vals));
+
+            const lang = detectLanguage();
+            document.getElementById('lang-selector').value = lang;
+            changeLang(lang);
+
+            resetGame();
+        });
+    </script>
+
+</body>
+
+</html>
